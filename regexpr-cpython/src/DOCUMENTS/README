@@ -1,0 +1,47 @@
+regedit_src/README
+
+Hey, Thank you for your interest. This file contains some notes...
+
+Parts of regular expression are...
+----------------------------------
+\ escape character. example '\.'
+. any character(not new line character, use DOTALL flag for new line character).
+  example '..t' or '.+t' and '.+'(The whole line)
+\w any alphabet(a-z) or a digit(0-9). example '\w\w\w\s\S+' or '\w+'
+\s white space character(space tab new line). example '\s+'
+\S not a white space character. example '\S+\.'
++ at least one instance. example 'w+'
+* zero or more instances. example 'w*'
+[] set of characters. example '[\w.]+'(The whole set repeats one or more 
+   times) The dot does not mean any character it just literally a dot. In a set,
+   order does not matter. The match can be proper sub set. One other example 
+   can be '[\w.]@[\w.]+'(Left of the dot find one \w or .(which ever comes 
+   first(order does not matter)) and right of the @ find as many \w and .(It 
+   is merely a dot literal), so here too the order does not matter)
+() example pat = '(.+)@(.+)'(Every thing before and after @) 
+   or '(\w+)@(\w+)'(Only the alphabets)
+       m = re.search(pat, "blah nick.p@gmail.com yatta @")
+       if m:
+          print m.group(1)
+	  print m.group(2)
+
+
+Stack trace exception(From the past to present)
+-----------------------------------------------
+The bottom most line is more relevant
+
+Triple quotes
+-------------
+They will be shown when you take help on the python module
+
+urllib module
+-------------
+urllib.urlopen("URL")
+urllib.urlretrive("URL")
+
+re module
+---------
+match(), 
+findall(), It will find parenthesis and turn the list returned into a tuple 
+           holder
+	  
