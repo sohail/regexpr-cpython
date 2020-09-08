@@ -99,6 +99,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src/regexpr.c" />
+    <ClCompile Include="src/iter.c" /> 
   </ItemGroup>
   <ItemGroup>
     <!-- <ResourceCompile Include="..\PC\python_nt.rc" /> -->

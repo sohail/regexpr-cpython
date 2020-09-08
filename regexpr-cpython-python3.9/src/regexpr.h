@@ -10,6 +10,8 @@
 #include <Python.h>
 #include <structmember.h>
 
+#include "iter.h"
+
 #define		NEW_LINE	0x0a
 #define		CARRIAGE_RETURN	0x0d
 #define		SPACE_BAR	0x20
@@ -34,25 +36,25 @@ PyDoc_STRVAR(re_doc, "re\n");
 /* Instance which deligates to the class(PyObjectType *ob_type) */
 typedef struct {
 
-   /* 
-    * Macro PyObject_HEAD expands into...
-    * struct _object *_ob_next;
-    * struct _object *_ob_prev;
-    * Py_ssize_t ob_refcnt;
-    * struct _typeobject *ob_type;
-    *
-    * And the PyObject is declared as...
-    *    typedef struct {   
-    *       PyObject_HEAD
-    *    }PyObject;   
-    */	
-   PyObject_HEAD
+    /* 
+     * Macro PyObject_HEAD expands into...
+     * struct _object *_ob_next;
+     * struct _object *_ob_prev;
+     * Py_ssize_t ob_refcnt;
+     * struct _typeobject *ob_type;
+     *
+     * And the PyObject is declared as...
+     *    typedef struct {   
+     *       PyObject_HEAD
+     *    }PyObject;   
+     */	
+    PyObject_HEAD
 
-   /* Type specific members go here */
-   /*const char *str;*/
-   //pattern_object expr_obj;
-   /*Py_ssize_t flags;*/
+    /* Type specific members go here */
+    const char *str;
+    //pattern_object expr_obj;
+    Py_ssize_t flags;
 
-   /*PyObject *dict;*/
+    PyObject *dict;
    	   		   
 }regexpr_object;	

@@ -23,7 +23,12 @@
 
 def main():
     print ("In the main")
-    	 	      
+
+    try:
+        o = regexpr.re("", regexpr.REGEXPR_COMPILE_FLAG | regexpr.REGEXPR_FOO_FLAG)
+    except (regexpr.error) as e:
+        print (e)	 
+
 
 """
 Every module has a name and statements in a module can find out the name of its
@@ -38,7 +43,6 @@ if __name__ == "__main__":
    import sys
 
    try:
-
       import regexpr
 
       # single exit point, main()'s return value will be our exit status

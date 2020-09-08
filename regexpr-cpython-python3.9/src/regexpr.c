@@ -4,26 +4,66 @@
 
 /*
  * src/regexpr.c
- * Written by, sohail.github.io
+ * Written 
+ * by, sohail.github.io
  */
 
 /*
  * Programmers just push the ugly around
  */
-
 #include "regexpr.h"
+
+/* Objects/exceptions.c, Doc/ext/extending.tex */
+PyObject *Err_Regexpr;
 
 static int regexpr_PyTypeObject_initproc(regexpr_object *self, PyObject *args, PyObject *keywords)
 {
+    int ret = 0; 
 
-   int ret = 0;  	
+    /* "Os|i" is better but for now I'll stick to the following code block */
+    if (!PyArg_ParseTuple(args, "si", &(self->str), &(self->flags)))
+    {
+        //PyErr_Print();                                                
+        PyErr_Clear();
+        //PyErr_Format(Err_Regexpr, "%0.12s", "Any string 12 bytes or more long can come here, 12 simply means that Null terminator character if not present may cause segmentation faults");
+        PyErr_SetString(Err_Regexpr, "regexpr.c, in regexpr_PyTypeObject_initproc(), too fee arguments passed to this method");
+        ret = -1;
+    } 	
 
-   return ret;	
+    return ret;	
 }
 
 static PyObject *regexpr_PyTypeObject_newfunc(PyTypeObject *ptr_re, PyObject *args, PyObject *keywords)
 {
-    return NULL;
+    regexpr_object *self;
+
+   /*  
+     TODO   
+     The following behavior was valid for 2.7.* I still've to find if it is still valid
+     -----------------------------------------------------------------------------------  
+     PyType_Ready(PyTypeObject *) does lot of things and lot it does not do, 
+     one of the later things is, not initializing tp_new and tp_init. If you 
+     explicitly not do that then a runtime exception will be thrown at this 
+     next statement. 
+     The exception statement is... cannot create 'module.class' instance 
+     'module.class' is taken from PyTypeObject::tp_name 
+    */
+    self = PyObject_New(regexpr_object, &re);
+
+    if (self == NULL)
+    {
+        return NULL;
+    }
+
+    self->dict = PyDict_New();
+
+    if (self->dict == NULL)
+    {
+        Py_XDECREF(self);
+        return NULL; 
+    }
+
+    return (PyObject *)self;        
 }
 
 /* Include/object.h, Objects/typeobject.c */
@@ -95,9 +135,9 @@ static PyTypeObject re = {
    0,						/* tp_descr_get */
    0, 						/* tp_descr_set */
    0,						/* tp_dictoffset, Py_ssize_t */
-   (initproc)regexpr_PyTypeObject_initproc,	/* tp_init */
+   (initproc)regexpr_PyTypeObject_initproc, /* tp_init */
    0,						/* tp_alloc */
-   regexpr_PyTypeObject_newfunc,			/* tp_new */
+   (newfunc)regexpr_PyTypeObject_newfunc,	/* tp_new */
    0,						/* tp_free, Low-Level \
 						   free-memory routine */
    0,						/* tp_is_gc, For \
@@ -130,25 +170,62 @@ static struct PyModuleDef regexprmodule = {
 PyMODINIT_FUNC PyInit_regexpr(void)
 {
     /* This module */
-   PyObject *module_re;
+    PyObject *module_re;
+    extern PyObject *RegExprCompileFlag, *RegExprFooFlag;
 
-   /*if (PyType_Ready(&re) < 0)
-      return NULL;*/	   
+    if ((RegExprCompileFlag = Py_BuildValue("i", REGEXPR_COMPILE_FLAG)) == NULL)
+    {
+        return NULL;
+    }
+    if ((RegExprFooFlag = Py_BuildValue("i", REGEXPR_FOO_FLAG)) == NULL)
+    {
+        Py_XDECREF(RegExprCompileFlag);	   
+        return NULL;	   
+    }
 
-   /*
-    * The name of the module, the module methods and any document string 
-    * There is a one to one corresspondence between the name of the module,
-    * the initialization function's name and finally the name of this file
-    */    
-   module_re = PyModule_Create(&regexprmodule);
-   if (module_re == NULL)
-       return NULL;
+    if (PyType_Ready(&re) < 0)
+    {
+        Py_XDECREF(RegExprCompileFlag);
+        Py_XDECREF(RegExprFooFlag);
+        return NULL;
+    }
 
-   /* Add the instance of TypeObject to the module dict */
-   /*PyModule_AddObject(module_re, "regexpr", (PyObject *)&re);*/    
+    /*
+     * The name of the module, the module methods and any document string 
+     * There is a one to one corresspondence between the name of the module,
+     * the initialization function's name and finally the name of this file
+     */    
+    module_re = PyModule_Create(&regexprmodule);
+    if (module_re == NULL)
+    {
+        Py_XDECREF(RegExprCompileFlag);
+        Py_XDECREF(RegExprFooFlag);
+        return NULL;
+    }
 
-   /* Add the instance of TypeObject to the module dict */
-   //PyModule_AddObject(module_re, "regexpr", (PyObject *)&argsv);
+    /* Add the instance of TypeObject to the module dict */
+    //PyModule_AddObject(module_re, "re", (PyObject *)&re);
+
+    /* PyObject_Call()(Objects/abstract.c) will call the PyType_Type.tp_call.
+      The PyType_Type is defined in file Objects/typeobject.c */
+    /* The name must be module.class token, we creating new class and this 
+      token will go in PyTypeObject::tp_name */
+    Err_Regexpr = PyErr_NewException("regexpr.error", NULL, NULL);
+    if (Err_Regexpr == NULL)
+    {
+        Py_XDECREF(RegExprCompileFlag);
+        Py_XDECREF(RegExprFooFlag);
+        Py_XDECREF(module_re);
+
+        return NULL;
+    }
+
+    /* Add the instance of TypeObject to the module dict */
+    PyModule_AddObject(module_re, "re", (PyObject *)&re);
+    PyModule_AddObject(module_re, "error", Err_Regexpr);
+
+    /* Add the instance of TypeObject to the module dict */
+    //PyModule_AddObject(module_re, "regexpr", (PyObject *)&argsv);
 
     /*PyObject *dict;
     PyObject *module = PyModule_Create(&argsvmodule);
@@ -174,6 +251,10 @@ PyMODINIT_FUNC PyInit_regexpr(void)
     ADD_DEFINE(MB_ICONQUESTION);*/
 
     //PyModule_AddObject(module, "argsv", (PyObject *)&argsv);
+
+    /* Will appear under heading DATA */
+    PyModule_AddObject(module_re, "REGEXPR_COMPILE_FLAG", RegExprCompileFlag);
+    PyModule_AddObject(module_re, "REGEXPR_FOO_FLAG", RegExprFooFlag);
 
     return module_re;
 }
