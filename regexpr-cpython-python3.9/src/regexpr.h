@@ -49,10 +49,10 @@ typedef struct {
    PyObject_HEAD
 
    /* Type specific members go here */
-   const char *str;
+   /*const char *str;*/
    //pattern_object expr_obj;
-   Py_ssize_t flags;
+   /*Py_ssize_t flags;*/
 
-   PyObject *dict;
+   /*PyObject *dict;*/
    	   		   
 }regexpr_object;	
