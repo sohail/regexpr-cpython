@@ -52,7 +52,7 @@ typedef struct {
 
     /* Type specific members go here */
     const char *str;
-    //pattern_object expr_obj;
+    pattern_object expr_obj;
     Py_ssize_t flags;
 
     PyObject *dict;

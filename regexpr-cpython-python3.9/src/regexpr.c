@@ -4,8 +4,7 @@
 
 /*
  * src/regexpr.c
- * Written 
- * by, sohail.github.io
+ * Written by, sohail.github.io
  */
 
 /*
@@ -26,9 +25,11 @@ static int regexpr_PyTypeObject_initproc(regexpr_object *self, PyObject *args, P
         //PyErr_Print();                                                
         PyErr_Clear();
         //PyErr_Format(Err_Regexpr, "%0.12s", "Any string 12 bytes or more long can come here, 12 simply means that Null terminator character if not present may cause segmentation faults");
-        PyErr_SetString(Err_Regexpr, "regexpr.c, in regexpr_PyTypeObject_initproc(), too fee arguments passed to this method");
+        PyErr_SetString(Err_Regexpr, "regexpr.c, in regexpr_PyTypeObject_initproc(), 2 arguments were expected by this method");
         ret = -1;
-    } 	
+    }
+
+    printf("--> %s\n", self->str); 	
 
     return ret;	
 }
@@ -190,6 +191,13 @@ PyMODINIT_FUNC PyInit_regexpr(void)
         return NULL;
     }
 
+    if (PyType_Ready(&pattern) < 0)
+    {
+        Py_XDECREF(RegExprCompileFlag);
+        Py_XDECREF(RegExprFooFlag);
+        return NULL;
+    }
+
     /*
      * The name of the module, the module methods and any document string 
      * There is a one to one corresspondence between the name of the module,
@@ -222,6 +230,7 @@ PyMODINIT_FUNC PyInit_regexpr(void)
 
     /* Add the instance of TypeObject to the module dict */
     PyModule_AddObject(module_re, "re", (PyObject *)&re);
+    PyModule_AddObject(module_re, "expr", (PyObject *)&pattern);
     PyModule_AddObject(module_re, "error", Err_Regexpr);
 
     /* Add the instance of TypeObject to the module dict */
