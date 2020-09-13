@@ -23,7 +23,21 @@ static PyObject* pattern_PyTypeObject_newfunc(PyTypeObject *ptr_argsv, PyObject 
 {
     pattern_object* self;
 
-    return NULL;
+    /* A GENERAL COMMENT */ 
+    /* PyType_Ready(PyTypeObject *) does lot of things and lot it does not do, 
+       one of the later things is not initializing tp_new and tp_init. If you 
+       explicitly not do that then a runtime exception will be thrown at this 
+       next statement. 
+       The exception statement is... cannot create 'module.class' instance 
+       'module.class' is taken from PyTypeObject::tp_name */ 
+    self = PyObject_New(pattern_object, &pattern);
+
+    if (self == NULL)
+    {
+        return NULL;
+    }
+
+    return self;
 }
 
 

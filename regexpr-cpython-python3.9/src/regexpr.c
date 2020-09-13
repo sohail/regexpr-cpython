@@ -29,7 +29,7 @@ static int regexpr_PyTypeObject_initproc(regexpr_object *self, PyObject *args, P
         ret = -1;
     }
 
-    printf("--> %s\n", self->str); 	
+    /*printf("--> %s\n", self->str);*/ 	
 
     return ret;	
 }
