@@ -1,1 +1,1 @@
-msbuild regexpr.xml /p:PySourcePath=D:\regexpr-python\CPython\
+msbuild regexpr.xml /p:PySourcePath=.\CPython\

@@ -37,6 +37,39 @@ static PyObject* pattern_PyTypeObject_newfunc(PyTypeObject *ptr_argsv, PyObject 
         return NULL;
     }
 
+    /* First check if two of these arguments are given */  
+    if (!PyArg_ParseTuple(args, "si", &(self->expr), &(self->flags))) 
+    {
+        PyErr_Clear();
+
+        /* No two arguments were not given, check if one argument is given */
+        if (!PyArg_ParseTuple(args, "s", &(self->expr)))
+        {
+            /* No arguments were given */
+            PyErr_SetString(Err_Regexpr, "iter.c, in pattern_PyTypeObject_newfunc(), atleast one argument was expected by this method");
+            return NULL;
+        }
+
+        /* Here set flags to default values, if there are any */
+        /* But flags is not modifiable, cast it as such that it becomes modifiable */
+        *((unsigned int*)&(self->flags)) = 0;        
+    }
+
+    self->dict = PyDict_New();
+
+    if (self->dict == NULL)
+    {
+        PyErr_SetString(Err_Regexpr, "iter.c, in pattern_PyTypeObject_newfunc(), unable to initialize self->dict");
+        return NULL;        
+    }
+
+    /* The self->dict is constructed, though it is empty. The self->expr and self->flags are assigned values to */
+
+    /* User has explicitly asked us to compile the regular expression, we'll compile the regular expression and but it is never returned individually */
+    if (self->flags & REGEXPR_COMPILE_FLAG)
+    {
+    }
+
     return self;
 }
 

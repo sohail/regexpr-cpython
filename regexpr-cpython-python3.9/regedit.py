@@ -25,7 +25,8 @@ def main():
     print ("In the main")
 
     try:
-        o = regexpr.re("", regexpr.REGEXPR_COMPILE_FLAG | regexpr.REGEXPR_FOO_FLAG)
+        #o = regexpr.re("", regexpr.REGEXPR_COMPILE_FLAG | regexpr.REGEXPR_FOO_FLAG)
+        o = regexpr.expr("")
     except (regexpr.error) as e:
         print (e)	 
 
