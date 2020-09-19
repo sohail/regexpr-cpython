@@ -14,6 +14,14 @@ PyObject *RegExprFooFlag;
 
 extern PyObject *Err_Regexpr;
 
+/* Forward declaration, you know in olden days this was called a "function prototype"*/
+PyObject* pattern_methods_compile(pattern_object*, PyObject*, PyObject*);
+
+static PyMethodDef pattern_methods[] = { 
+	{"compile", (PyCFunction)pattern_methods_compile, METH_VARARGS, "compile a regular expression, returning a dict"},
+	{NULL, NULL, 0, NULL},
+};
+
 static int pattern_PyTypeObject_initproc(pattern_object *self, PyObject *args, PyObject *keywords) {
  
    return 0;
@@ -22,6 +30,7 @@ static int pattern_PyTypeObject_initproc(pattern_object *self, PyObject *args, P
 static PyObject* pattern_PyTypeObject_newfunc(PyTypeObject *ptr_argsv, PyObject *args, PyObject *keywords)
 {
     pattern_object* self;
+    PyObject *func, *func_args, *func_ret, *expr_func_arg, *flags_func_arg;
 
     /* A GENERAL COMMENT */ 
     /* PyType_Ready(PyTypeObject *) does lot of things and lot it does not do, 
@@ -59,6 +68,8 @@ static PyObject* pattern_PyTypeObject_newfunc(PyTypeObject *ptr_argsv, PyObject 
 
     if (self->dict == NULL)
     {
+        Py_XDECREF(self);
+
         PyErr_SetString(Err_Regexpr, "iter.c, in pattern_PyTypeObject_newfunc(), unable to initialize self->dict");
         return NULL;        
     }
@@ -68,11 +79,128 @@ static PyObject* pattern_PyTypeObject_newfunc(PyTypeObject *ptr_argsv, PyObject 
     /* User has explicitly asked us to compile the regular expression, we'll compile the regular expression and but it is never returned individually */
     if (self->flags & REGEXPR_COMPILE_FLAG)
     {
-    }
+        /* Compile regular expression */
+        //func = Py_FindMethod(pattern_methods, (PyObject *)self, "compile");
+        if (!PyObject_HasAttrString((PyObject*)self, "compile"))
+        {
+            Py_XDECREF(self->dict);
+            Py_XDECREF(self);
 
-    return self;
+            PyErr_SetString(Err_Regexpr, "iter.c, in pattern_PyTypeObject_newfunc(), unable to find method \"compile\" to compile the pattern as \"REGEXPR_COMPILE_FLAG\" was used");
+            return NULL;
+        }
+
+        func = PyObject_GetAttrString((PyObject*)self, "compile");
+
+        if (func == NULL)
+        {
+            Py_XDECREF(self->dict);
+            Py_XDECREF(self);
+
+            PyErr_SetString(Err_Regexpr, "iter.c, in pattern_PyTypeObject_newfunc(), instanxce of pattern class does not have an attribute by the name of \"compile\" to compile the pattern as \"REGEXPR_COMPILE_FLAG\" was used");
+            return NULL;
+        }
+
+        func_args =  PyTuple_New(2);
+
+        if (func_args == NULL)
+        {
+            Py_XDECREF(func);
+	        Py_XDECREF(self->dict);
+            Py_XDECREF(self);
+
+            PyErr_SetString(Err_Regexpr, "iter.c, in pattern_PyTypeObject_newfunc(), call to function \"PyTuple_New()\" failed");
+            return NULL;
+        }
+
+        expr_func_arg = Py_BuildValue("s", self->expr);
+
+        if (expr_func_arg == NULL)
+        {
+            Py_XDECREF(func);
+	        Py_XDECREF(self->dict);
+            Py_XDECREF(func_args);
+            Py_XDECREF(self);
+
+            PyErr_SetString(Err_Regexpr, "iter.c, in pattern_PyTypeObject_newfunc(), call to function \"Py_BuildValue()\" failed");
+            return NULL;
+        }
+
+        flags_func_arg = Py_BuildValue("i", self->flags);
+
+        if (flags_func_arg == NULL)
+        {
+            Py_XDECREF(func);
+	        Py_XDECREF(self->dict);
+            Py_XDECREF(func_args);
+            Py_XDECREF(expr_func_arg);
+            Py_XDECREF(self);
+
+            PyErr_SetString(Err_Regexpr, "iter.c, in pattern_PyTypeObject_newfunc(), call to function \"Py_BuildValue()\" failed");
+            return NULL;
+        }
+
+        /* On success it returns 0 */
+        if (PyTuple_SetItem(func_args, 0, expr_func_arg) || PyTuple_SetItem(func_args, 1, flags_func_arg))
+        {
+            PyErr_Clear();
+
+            Py_XDECREF(func);
+	        Py_XDECREF(self->dict);
+            Py_XDECREF(func_args);
+            Py_XDECREF(expr_func_arg);
+            Py_XDECREF(flags_func_arg);
+            Py_XDECREF(self);
+
+            PyErr_SetString(Err_Regexpr, "iter.c, in pattern_PyTypeObject_newfunc(), call to function \"PyTuple_SetItem()\" failed");
+            return NULL;
+        }
+
+        /* 
+           Though the arguments to this function are optional but we are explicitly providing them. 
+           At this point the self->dict has been constructed and self->expr and self->flags have been passed to the compile function as arguments
+         */
+
+        /*
+            TODO
+            PyCFunction_Call is deprecated in 3.9
+            https://stackoverflow.com/questions/26716711/documentation-for-pycfunction-new-pycfunction-newex
+         */    
+        //func_ret = PyCFunction_Call(func, func_args, NULL);
+        /* 
+            https://stackoverflow.com/questions/3789881/create-and-call-python-function-from-string-via-c-api
+         */
+        func_ret = PyObject_CallObject(func, func_args);        
+        if (func_ret == NULL)
+        {
+            Py_XDECREF(func);
+	        Py_XDECREF(self->dict);
+            Py_XDECREF(func_args);
+            Py_XDECREF(expr_func_arg);
+            Py_XDECREF(flags_func_arg);
+            Py_XDECREF(self);
+
+            PyErr_SetString(Err_Regexpr, "iter.c, in pattern_PyTypeObject_newfunc(), call to function \"PyCFunction_Call()\" failed");
+            return NULL;
+        }
+    }
+    
+    return (PyObject*)self;
 }
 
+static PyObject* pattern_methods_compile(pattern_object* self, PyObject* args, PyObject* keywords)
+{
+    PyObject* dict = NULL;
+        
+    return (PyObject*)self;
+}
+
+/*
+static PyMethodDef pattern_methods[] = { 
+	{"compile", (PyCFunction)pattern_methods_compile, METH_VARARGS, "compile a regular expression, returning a dict"},
+	{NULL, NULL, 0, NULL},
+};
+*/
 
 /* Include/object.h, Objects/typeobject.c */
 /* A new class, this class will inherit from class object. The function 
@@ -134,7 +262,7 @@ PyTypeObject pattern = {
    (getiterfunc)0/*pattern_PyTypeObject_getiterfunc*/, /* tp_iter */
    (iternextfunc)0, 				  /* tp_iternext */
    /* Attribute descriptor and subclassing stuff */
-   0/*pattern_methods*/,				/* tp_methods, PyMethodDef* */
+   pattern_methods,				      /* tp_methods, PyMethodDef* */
    0/*pattern_object_members*/,			/* tp_members, PyMemeberDef* */
    0,						/* tp_getset, PyGetSetDef* */
    0,						/* tp_base, _typeobject* */

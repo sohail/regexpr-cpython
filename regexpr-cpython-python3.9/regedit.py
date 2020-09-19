@@ -7,14 +7,13 @@
 
 """ 
           regexpr, edit a file with regular expression[s] 
-                Written by, http://sohail.github.io
+                Written by, soni@sharingeconomy.pk
   --------------------------------------------------------------
     ----------------------------------------------------------
       ------------------------------------------------------
 
     A general purpose script to clean text files from what ever qualifies as
-    nasty. 
-    The nastiness of text is determined by one or more regular expressions
+    nasty. The nastiness of text is determined by one or more regular expressions
 
     Example usage:- ...
           $ regedit file [file ...] reg exp [exp ...]
@@ -26,7 +25,15 @@ def main():
 
     try:
         #o = regexpr.re("", regexpr.REGEXPR_COMPILE_FLAG | regexpr.REGEXPR_FOO_FLAG)
-        o = regexpr.expr("")
+        """
+            expr is a class, it understands the regular expressions very well. 
+            Either the expr class will compile the regular experssion or else... 
+            provides the set of methods, which others will use and compile the regular expression. 
+            The regexpr.re class uses the regexpr.expr class to find the sub string. 
+            The regexpr.REGEXPR_COMPILE_FLAG makes it compile the pattern. 
+            o is an instance of pattern(a.k.a regexpr.expr) class.
+        """
+        o = regexpr.expr("", regexpr.REGEXPR_COMPILE_FLAG | regexpr.REGEXPR_FOO_FLAG)
     except (regexpr.error) as e:
         print (e)	 
 
