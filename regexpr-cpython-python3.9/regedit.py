@@ -12,28 +12,30 @@
     ----------------------------------------------------------
       ------------------------------------------------------
 
-    A general purpose script to clean text files from what ever qualifies as
-    nasty. The nastiness of text is determined by one or more regular expressions
+    A general purpose script to clean text files from what ever qualifies as nasty.
+    The nastiness of text is determined by one or more regular expressions
 
     Example usage:- ...
           $ regedit file [file ...] reg exp [exp ...]
           $ regedit foo bar baz reg '/b//' '/ar/bar/g' text 
 """
 
-def main():
-    print ("In the main")
-
-    try:
-        #o = regexpr.re("", regexpr.REGEXPR_COMPILE_FLAG | regexpr.REGEXPR_FOO_FLAG)
+def main():    
+    try:        
         """
             expr is a class, it understands the regular expressions very well. 
             Either the expr class will compile the regular experssion or else... 
-            provides the set of methods, which others will use and compile the regular expression. 
+            provides the set of methods, which others would use and compile the regular expression. 
             The regexpr.re class uses the regexpr.expr class to find the sub string. 
             The regexpr.REGEXPR_COMPILE_FLAG makes it compile the pattern. 
-            o is an instance of pattern(a.k.a regexpr.expr) class.
+            Here o is an instance of pattern(a.k.a regexpr.expr) class
+
+            The regexpr.REGEXPR_FOO_FLAG is dummy, does nothing flag; implemented just for study purposes
         """
-        o = regexpr.expr("", regexpr.REGEXPR_COMPILE_FLAG | regexpr.REGEXPR_FOO_FLAG)
+        o = regexpr.expr("^/foo/d", regexpr.REGEXPR_COMPILE_FLAG | regexpr.REGEXPR_FOO_FLAG)
+
+        # Supports sq_length(). Returns Py_ssize_t
+        print (len(o))               
     except (regexpr.error) as e:
         print (e)	 
 

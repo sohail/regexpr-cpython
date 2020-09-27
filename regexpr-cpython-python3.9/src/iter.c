@@ -13,6 +13,7 @@ PyObject *RegExprCompileFlag;
 PyObject *RegExprFooFlag;
 
 extern PyObject *Err_Regexpr;
+extern PyTypeObject keys;
 
 /* Forward declaration, you know in olden days this was called a "function prototype"*/
 PyObject* pattern_methods_compile(pattern_object*, PyObject*, PyObject*);
@@ -190,10 +191,193 @@ static PyObject* pattern_PyTypeObject_newfunc(PyTypeObject *ptr_argsv, PyObject 
 
 static PyObject* pattern_methods_compile(pattern_object* self, PyObject* args, PyObject* keywords)
 {
-    PyObject* dict = NULL;
-        
+    const unsigned int flags;	
+    const char* expr; /* This holds pointer to converted Python string to C pointer to character string which is null terminated */
+    PyObject *dict, *value;
+
+    size_t len, i = 0;
+
+    /* _PyObject_New() of Objects/object.c */
+    keys_object* key;
+    
+    if (!PyArg_ParseTuple(args, "si", &expr, &flags))
+    {
+        PyErr_Clear();
+
+        /* At least at this point it is clear that it is not an internal call. The internal call always gives both of the optional arguments */
+
+        if (!PyArg_ParseTuple(args, "s", &expr))
+        {
+            PyErr_Clear(); 	      
+          
+            /* It is an external command, we're requesting to compile the previously provided pattern */
+            if (!PyDict_Size(self->dict))
+            {          
+                Py_XINCREF(self->dict);
+
+                dict = self->dict;
+	            expr = self->expr;
+	            *((int *)&flags) = (self->flags | REGEXPR_COMPILE_FLAG);
+            }
+	        else
+            {
+                Py_XINCREF(self->dict);
+	            dict = self->dict;
+
+	            goto out;
+            }		 
+        } 
+        else
+        {
+             /* This was an external call with one required argument */  
+	         dict = PyDict_New();
+	         if (dict == NULL)
+             {
+                 goto out;
+             }
+
+             *((int *)&flags) = REGEXPR_COMPILE_FLAG;	      
+        }	      
+    }
+    else
+    {
+         /* The both optional arguments are given. Check if compile() is explicitly called(externally) by the user or compile() is called internally */
+
+         if (!strcmp(expr, self->expr) && flags == self->flags)
+         { 
+             /* compile() is called internally */
+             if (PyDict_Size(self->dict))
+             {
+                 /* Internal call asks for the recompile of expr(pattern). compile() does not do the recompile */
+                 dict = self->dict;
+	             Py_XINCREF(dict);
+
+                 goto out;
+             }
+	        else if (flags & REGEXPR_COMPILE_FLAG)
+            {
+                /* This is an internal call, request to call the pattern which is still not compiled */
+
+                dict = self->dict;
+                Py_XINCREF(dict);
+            }
+            else
+            {
+                /* Very bad Internal call, an exception should be raised here */
+                Py_XINCREF(Py_None);
+	            dict = Py_None;
+
+                goto out;	    
+            }		 		 
+        }
+        else
+        {
+            /* It is an external call, we'll not use the self->dict and construct a new dict */
+            dict = PyDict_New();
+	        if (dict == NULL)
+            {
+                goto out;
+            }            
+
+            Py_XINCREF(dict); 
+        }	      
+   } 	   
+      		     
+    /* Finaly compile the pattern. The variables expr, flags and dict are all valid live and working well */
+
+    while (expr[i] != '\0')
+    {
+        switch (expr[i] & 0xff)
+        {
+            case '^':
+            break;
+	        case '.':
+	        break;
+	        case '*':
+	        break;
+	        case '\\':
+	        break;
+	        case '[':
+	        break;
+	        case '+':
+	        break;
+	        case '$':
+	        break;
+	        default:                
+	            key = PyObject_New(keys_object, &keys);
+	            if (key != NULL)
+                {                    
+	                len = strlen(ORDINARY_CHARACTER);
+	                /* size_t */
+	                //*(int *)(&key->index) = i;
+	                key->index = i;
+	                *(int *)(&key->type) = ORDINARY_CHARACTER_N;
+	                key->type_str = malloc(len + 1);
+	                if (key->type_str != NULL)
+                    {
+                        strcpy((char *)key->type_str, ORDINARY_CHARACTER);
+		                *((char *)key->type_str + len) = '\0';
+		                //value = PyString_FromStringAndSize(expr + i, 1);
+                        value = PyUnicode_FromStringAndSize(expr + i, 1);
+                        //value = PyUnicode_New(1, expr + i);
+
+		                if (value != NULL)
+                        {                               
+                            Py_XINCREF(key);
+		                    Py_XINCREF(value);
+
+		                    if (PyDict_SetItem(dict, (PyObject *)key, value) < 0)
+                            {                                
+		                        Py_XDECREF(key);
+		                        Py_XDECREF(value);
+		                        PyErr_Clear();
+                            }   			   		   
+                        }
+		                else 
+                        {                            
+                            PyErr_Clear();
+                        }
+                    }
+                }
+	            else
+                {
+	                 PyErr_Clear();     
+                }
+	        break;
+        }
+
+        i++;
+    }
+
+out:        
     return (PyObject*)self;
 }
+
+static Py_ssize_t pattern_as_sequence_length(pattern_object* self)
+{
+    Py_ssize_t ret = 0;
+
+    if (self->dict)
+    {
+        ret = PyDict_Size(self->dict);
+    }
+    return ret;
+}
+
+static PySequenceMethods pattern_as_sequence = {
+    (lenfunc)pattern_as_sequence_length, /* sq_length, used by len() sugar */
+    (binaryfunc)NULL, /* sq_concat used by + sugar */
+    (ssizeargfunc)NULL, /* sq_repeat, used by * sugar(as in multiplication) */
+    (ssizeargfunc)NULL, /* sq_item, used by PySequence_GetItem() and other detail */
+    (ssizessizeargfunc)NULL, /* sq_slice */
+    (ssizeobjargproc)NULL, /* sq_ass_item */
+    (ssizessizeobjargproc)NULL, /* sq_ass_slice */
+    (objobjproc)NULL, /* sq_contains */
+
+    /* Added in release 2.0 */
+    (binaryfunc)NULL, /* sq_inplace_concat */
+    (ssizeargfunc)NULL, /* sq_inplace_repeat */
+};
 
 /*
 static PyMethodDef pattern_methods[] = { 
@@ -231,7 +415,7 @@ PyTypeObject pattern = {
    /* Methods suits for standard classes(Include/object.h) */ 
    0,						/* tp_as_number, \
 						       PyNumberMethods* */
-   0 /*&pattern_as_sequence*/, 			/* tp_as_sequence, 
+   &pattern_as_sequence, 			/* tp_as_sequence, 
 						       PySequenceMethods* */
    0,						/* tp_as_mapping, 
 						       PyMappingMethods* */
