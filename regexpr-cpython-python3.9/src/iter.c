@@ -364,11 +364,20 @@ static Py_ssize_t pattern_as_sequence_length(pattern_object* self)
     return ret;
 }
 
+static PyObject* expr_item(sub_pattern_object *self, Py_ssize_t i)
+{
+
+    printf("i = %d\n", i);
+
+    Py_XINCREF(Py_None);
+    return (PyObject *)Py_None;
+}
+
 static PySequenceMethods pattern_as_sequence = {
     (lenfunc)pattern_as_sequence_length, /* sq_length, used by len() sugar */
     (binaryfunc)NULL, /* sq_concat used by + sugar */
     (ssizeargfunc)NULL, /* sq_repeat, used by * sugar(as in multiplication) */
-    (ssizeargfunc)NULL, /* sq_item, used by PySequence_GetItem() and other detail */
+    (ssizeargfunc)expr_item, /* sq_item, used by PySequence_GetItem() and other detail */
     (ssizessizeargfunc)NULL, /* sq_slice */
     (ssizeobjargproc)NULL, /* sq_ass_item */
     (ssizessizeobjargproc)NULL, /* sq_ass_slice */

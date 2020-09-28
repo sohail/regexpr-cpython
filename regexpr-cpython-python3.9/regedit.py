@@ -35,7 +35,8 @@ def main():
         o = regexpr.expr("^/foo/d", regexpr.REGEXPR_COMPILE_FLAG | regexpr.REGEXPR_FOO_FLAG)
 
         # Supports sq_length(). Returns Py_ssize_t
-        print (len(o))               
+        print (len(o))
+        print (o[1])               
     except (regexpr.error) as e:
         print (e)	 
 
