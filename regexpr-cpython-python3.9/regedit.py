@@ -32,11 +32,16 @@ def main():
 
             The regexpr.REGEXPR_FOO_FLAG is dummy, does nothing flag; implemented just for study purposes
         """
-        o = regexpr.expr("^/foo/d", regexpr.REGEXPR_COMPILE_FLAG | regexpr.REGEXPR_FOO_FLAG)
+        o = regexpr.expr("/foo/d", regexpr.REGEXPR_COMPILE_FLAG | regexpr.REGEXPR_FOO_FLAG)
+        #o = regexpr.expr("", regexpr.REGEXPR_COMPILE_FLAG | regexpr.REGEXPR_FOO_FLAG)
 
         # Supports sq_length(). Returns Py_ssize_t
-        print (len(o))
-        print (o[1])               
+        #print (len(o))
+        #print (o[0])
+
+        for i in range(len(o)):
+            print (o[i])
+
     except (regexpr.error) as e:
         print (e)	 
 

@@ -303,7 +303,11 @@ static PyObject* pattern_methods_compile(pattern_object* self, PyObject* args, P
 	        break;
 	        case '$':
 	        break;
-	        default:                
+	        default:
+                /*if (expr[i] == 'd')
+                {
+                    printf("------> i = %d\n", i);
+                }*/                
 	            key = PyObject_New(keys_object, &keys);
 	            if (key != NULL)
                 {                    
@@ -364,10 +368,41 @@ static Py_ssize_t pattern_as_sequence_length(pattern_object* self)
     return ret;
 }
 
-static PyObject* expr_item(sub_pattern_object *self, Py_ssize_t i)
+static PyObject* pattern_as_sequence_item(pattern_object *self, Py_ssize_t i)
 {
+    PyObject *key = NULL, *value = NULL;
+    Py_ssize_t n = 0, pos = 0;
 
-    printf("i = %d\n", i);
+    if (self->dict)
+    {
+        n = PyDict_Size(self->dict);
+    }
+
+    if (!n)
+    {
+        PyErr_SetString(Err_Regexpr, "iter.c, in pattern_as_sequence_item(): dictionary is empty");
+        return NULL; 
+    }
+
+    if (i < 0)
+    {
+        PyErr_SetString(Err_Regexpr, "iter.c, in pattern_as_sequence_item(): whole number was expected as an inedx(or subscript), negative integer was provided instead");
+        return NULL; 
+    }
+
+    if (i > n)
+    {        
+        PyErr_SetString(Err_Regexpr, "iter.c, in pattern_as_sequence_item(): index(or subscript) out of range");
+        return NULL;
+    }
+
+    while (PyDict_Next(self->dict, &pos, &key, &value))
+    {
+        if (((keys_object*)key)->index == i)
+        {            
+            return value;
+        }
+    }    
 
     Py_XINCREF(Py_None);
     return (PyObject *)Py_None;
@@ -377,7 +412,7 @@ static PySequenceMethods pattern_as_sequence = {
     (lenfunc)pattern_as_sequence_length, /* sq_length, used by len() sugar */
     (binaryfunc)NULL, /* sq_concat used by + sugar */
     (ssizeargfunc)NULL, /* sq_repeat, used by * sugar(as in multiplication) */
-    (ssizeargfunc)expr_item, /* sq_item, used by PySequence_GetItem() and other detail */
+    (ssizeargfunc)pattern_as_sequence_item, /* sq_item, used by PySequence_GetItem() and other detail */
     (ssizessizeargfunc)NULL, /* sq_slice */
     (ssizeobjargproc)NULL, /* sq_ass_item */
     (ssizessizeobjargproc)NULL, /* sq_ass_slice */
