@@ -370,7 +370,7 @@ static Py_ssize_t pattern_as_sequence_length(pattern_object* self)
 
 static PyObject* pattern_as_sequence_item(pattern_object *self, Py_ssize_t i)
 {
-    PyObject *key = NULL, *value = NULL;
+    PyObject *key = NULL, *value = NULL, *list = PyList_New(3);
     Py_ssize_t n = 0, pos = 0;
 
     if (self->dict)
@@ -399,8 +399,12 @@ static PyObject* pattern_as_sequence_item(pattern_object *self, Py_ssize_t i)
     while (PyDict_Next(self->dict, &pos, &key, &value))
     {
         if (((keys_object*)key)->index == i)
-        {            
-            return value;
+        {   
+            PyList_SetItem(list, 0, PyLong_FromLong(((keys_object*)key)->type));
+            PyList_SetItem(list, 1, PyUnicode_FromString(((keys_object*)key)->type_str));
+            PyList_SetItem(list, 2, value);
+
+            return list;
         }
     }    
 

@@ -33,15 +33,15 @@ def main():
             The regexpr.REGEXPR_FOO_FLAG is dummy, does nothing flag; implemented just for study purposes
         """
         o = regexpr.expr("/foo/d", regexpr.REGEXPR_COMPILE_FLAG | regexpr.REGEXPR_FOO_FLAG)
-        #o = regexpr.expr("", regexpr.REGEXPR_COMPILE_FLAG | regexpr.REGEXPR_FOO_FLAG)
-
-        # Supports sq_length(). Returns Py_ssize_t
-        #print (len(o))
-        #print (o[0])
-
+        
+        # Go through the compiled regular expression, one dictionary item at a time
+        # I'm using word compiled here because I've no idea what else to call this process of parsing and making a dictionary out of pattern(or regular expression)
         for i in range(len(o)):
-            print (o[i])
-
+            # l is for list and it can be None as well
+            l = o[i]
+            if (l != None):
+                print ("Type = " + str(l[0]) + ", Type String = " + l[1] + ", Sub Pattern = " + l[2])
+                            
     except (regexpr.error) as e:
         print (e)	 
 
