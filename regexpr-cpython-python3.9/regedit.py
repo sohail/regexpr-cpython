@@ -23,8 +23,8 @@
 def main():    
     try:        
         """
-            expr is a class, it understands the regular expressions very well. 
-            Either the expr class will compile the regular experssion or else... 
+            regexpr.expr is a class, it understands the regular expressions very well. 
+            Either the regexpr.expr class will compile the regular experssion or else... 
             provides the set of methods, which others would use and compile the regular expression. 
             The regexpr.re class uses the regexpr.expr class to find the sub string. 
             The regexpr.REGEXPR_COMPILE_FLAG makes it compile the pattern. 
@@ -33,7 +33,7 @@ def main():
             The regexpr.REGEXPR_FOO_FLAG is dummy, does nothing flag; implemented just for study purposes
         """
         o = regexpr.expr("/foo/d", regexpr.REGEXPR_COMPILE_FLAG | regexpr.REGEXPR_FOO_FLAG)
-        
+        txt = "Hello"        
         # Go through the compiled regular expression, one dictionary item at a time
         # I'm using word compiled here because I've no idea what else to call this process of parsing and making a dictionary out of pattern(or regular expression)
         for i in range(len(o)):
@@ -41,6 +41,11 @@ def main():
             l = o[i]
             if (l != None):
                 print ("Type = " + str(l[0]) + ", Type String = " + l[1] + ", Sub Pattern = " + l[2])
+                # k is for instance of regexpr.keys
+                k = l[3]
+                # The idea is that call to k() will adjust the phrase as per the whole pattern one sub pattern at a time
+                txt = k(pattern=o.expr, phrase=txt)
+                print (txt)               
                             
     except (regexpr.error) as e:
         print (e)	 

@@ -27,24 +27,33 @@ static int keys_PyTypeObject_printfunc(keys_object *self, FILE *fp, int flags) {
    return 0;	
 }	
 
+/*
 static int keys_PyTypeObject_compfunc(PyObject *a, PyObject *b) {
 
    return 1; 	
-}	
+}
+*/	
 
 static long keys_PyTypeObject_hashfunc(keys_object *self) {
 
    return 1;	
 }
 
-/*
-static PyObject *keys_PyTypeObject_ternaryfunc(keys_object *self, \
-					PyObject *args, PyObject *keywords) {
+/* tp_call, currently working here */
+static PyObject *keys_PyTypeObject_ternaryfunc(keys_object *self, PyObject *args, PyObject *keywords)
+{    
+    char *phrase, *pattern;
 
-    return (PyObject *)self;
+    /* The last entry should be NULL, I know the source code of PyArg_ParseTupleAndKeywords() very well but even then I remain an Ass and suffered. For the rest of your life(a note to me) put NULL in the lists like this one */
+    static char *kwlist[] = {"phrase", "pattern", NULL};
 
+    if (!PyArg_ParseTupleAndKeywords(args, keywords, "ss", kwlist, &phrase, &pattern))
+    {
+        return NULL;
+    }
+    
+    return PyUnicode_FromString(phrase);    
 }
-*/
 
 static PyObject *keys_PyTypeObject_getiterfunc(keys_object *self) {
 
@@ -101,7 +110,7 @@ PyTypeObject keys = {
    (printfunc)keys_PyTypeObject_printfunc, 	/* tp_print */
    0, 						/* tp_getattr */
    0, 						/* tp_setattr */
-   keys_PyTypeObject_compfunc,			/* tp_compare */
+   (PyAsyncMethods*)0,			/* not tp_compare but the tp_as_sync */
    0,						/* tp_repr */
    /* Methods suits for standard classes(Include/object.h) */ 
    0,						/* tp_as_number, \
@@ -112,7 +121,7 @@ PyTypeObject keys = {
 						       PyMappingMethods* */
    /*More standard operations(here for binary compatibility)(Include/object.h*/
    (hashfunc)keys_PyTypeObject_hashfunc,	/* tp_hash */
-   (ternaryfunc)0/*keys_PyTypeObject_ternaryfunc*/, /* tp_call */
+   (ternaryfunc)keys_PyTypeObject_ternaryfunc, /* tp_call */      
    (reprfunc)0,					/* tp_str */
    0,						/* tp_getattro */
    0,						/* tp_setattro */

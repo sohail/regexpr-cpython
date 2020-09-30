@@ -368,9 +368,15 @@ static Py_ssize_t pattern_as_sequence_length(pattern_object* self)
     return ret;
 }
 
+static PyMemberDef pattern_object_members[] = {
+   {"expr", T_STRING, offsetof(pattern_object, expr), 0, "const char argv[]"},
+   {"flags", T_INT, offsetof(pattern_object, flags), 0, "const unsigned int flags"},
+   {NULL},
+};
+
 static PyObject* pattern_as_sequence_item(pattern_object *self, Py_ssize_t i)
 {
-    PyObject *key = NULL, *value = NULL, *list = PyList_New(3);
+    PyObject *key = NULL, *value = NULL, *list = PyList_New(4);
     Py_ssize_t n = 0, pos = 0;
 
     if (self->dict)
@@ -402,7 +408,11 @@ static PyObject* pattern_as_sequence_item(pattern_object *self, Py_ssize_t i)
         {   
             PyList_SetItem(list, 0, PyLong_FromLong(((keys_object*)key)->type));
             PyList_SetItem(list, 1, PyUnicode_FromString(((keys_object*)key)->type_str));
+
+            Py_XINCREF(value);
             PyList_SetItem(list, 2, value);
+            Py_XINCREF(key);
+            PyList_SetItem(list, 3, key);
 
             return list;
         }
@@ -494,8 +504,8 @@ PyTypeObject pattern = {
    (getiterfunc)0/*pattern_PyTypeObject_getiterfunc*/, /* tp_iter */
    (iternextfunc)0, 				  /* tp_iternext */
    /* Attribute descriptor and subclassing stuff */
-   pattern_methods,				      /* tp_methods, PyMethodDef* */
-   0/*pattern_object_members*/,			/* tp_members, PyMemeberDef* */
+   (PyMethodDef*)pattern_methods,				      /* tp_methods, PyMethodDef* */
+   (PyMemberDef*)pattern_object_members,	/* tp_members, PyMemeberDef* */
    0,						/* tp_getset, PyGetSetDef* */
    0,						/* tp_base, _typeobject* */
    0,						/* tp_dict, PyObject */
