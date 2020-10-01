@@ -51,6 +51,8 @@ static PyObject *keys_PyTypeObject_ternaryfunc(keys_object *self, PyObject *args
     {
         return NULL;
     }
+
+    self->handler();
     
     return PyUnicode_FromString(phrase);    
 }
@@ -76,7 +78,7 @@ static int keys_PyTypeObject_initproc(keys_object *self, PyObject *args, PyObjec
 
 static PyObject* keys_PyTypeObject_newfunc(PyTypeObject* ptr_keys, PyObject* args, PyObject* keywords) {
 
-   keys_object* self;
+   /*keys_object* self;*/
       
    Py_XINCREF(Py_None);
    return (PyObject *)Py_None;

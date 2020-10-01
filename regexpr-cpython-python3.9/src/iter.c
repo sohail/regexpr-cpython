@@ -303,14 +303,11 @@ static PyObject* pattern_methods_compile(pattern_object* self, PyObject* args, P
 	        break;
 	        case '$':
 	        break;
-	        default:
-                /*if (expr[i] == 'd')
-                {
-                    printf("------> i = %d\n", i);
-                }*/                
+	        default:                                
 	            key = PyObject_New(keys_object, &keys);
 	            if (key != NULL)
-                {                    
+                {   
+                    key->handler = default_handler;                 
 	                len = strlen(ORDINARY_CHARACTER);
 	                /* size_t */
 	                //*(int *)(&key->index) = i;

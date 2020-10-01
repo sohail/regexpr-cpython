@@ -4,8 +4,10 @@
 #include <Python.h>
 #include <structmember.h>
 
+#include "handlers.h"
+
 #ifndef 	REGEDIT_KEYS_H
-#define		REGEDIT_KEYS_H
+#define	REGEDIT_KEYS_H
 
 /* Will go in keys_object::type. The numeric equivalent of what ever is in keys_object::type_str */
 #define 	ORDINARY_CHARACTER_N	1
@@ -24,6 +26,7 @@ typedef struct {
    /*Py_ssize_t*/ size_t index; /* Dict is unorderd, we need an order and we need dict. We'll keep the order by evaluating a key the lower idx means the value should be used earlier than any other value which comes later in terms of idx. Programmers we just push the ugly around */
    const int type; /* Type of the key in number */
    const char *type_str; /* Name of the key */
+   char* (*handler)(void);
 
 } keys_object;
 

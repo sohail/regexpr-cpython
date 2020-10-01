@@ -18,8 +18,8 @@
 /* Py_XDECREF and Py_DECREF, Py_XDECREF is called when refernced object could be NULL. When reference is not NULL it then apply the macro Py_DECREF on the
  refered to object, see file Include/object.h */
 
-#define		REGEXPR_COMPILE_FLAG		1
-#define		REGEXPR_FOO_FLAG	        2	
+#define		REGEXPR_COMPILE_FLAG    1
+#define		REGEXPR_FOO_FLAG        2	
 
 /* Forward declarations */
 PyTypeObject pattern;

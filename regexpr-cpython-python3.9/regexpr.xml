@@ -100,7 +100,8 @@
   <ItemGroup>
     <ClCompile Include="src/regexpr.c" />
     <ClCompile Include="src/iter.c" /> 
-    <ClCompile Include="src/keys.c" />   
+    <ClCompile Include="src/keys.c" /> 
+    <ClCompile Include="src/handlers.c" /> 
   </ItemGroup>
   <ItemGroup>
     <!-- <ResourceCompile Include="..\PC\python_nt.rc" /> -->

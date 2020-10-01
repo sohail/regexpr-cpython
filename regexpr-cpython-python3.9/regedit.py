@@ -32,8 +32,8 @@ def main():
 
             The regexpr.REGEXPR_FOO_FLAG is dummy, does nothing flag; implemented just for study purposes
         """
-        o = regexpr.expr("/foo/d", regexpr.REGEXPR_COMPILE_FLAG | regexpr.REGEXPR_FOO_FLAG)
-        txt = "Hello"        
+        o = regexpr.expr("/zoo/bar/r", regexpr.REGEXPR_COMPILE_FLAG | regexpr.REGEXPR_FOO_FLAG)
+        txt = "zoo went to bar for some baz"        
         # Go through the compiled regular expression, one dictionary item at a time
         # I'm using word compiled here because I've no idea what else to call this process of parsing and making a dictionary out of pattern(or regular expression)
         for i in range(len(o)):
@@ -44,6 +44,7 @@ def main():
                 # k is for instance of regexpr.keys
                 k = l[3]
                 # The idea is that call to k() will adjust the phrase as per the whole pattern one sub pattern at a time
+                # k knows about the sub pattern and how to adust the phrase with it                
                 txt = k(pattern=o.expr, phrase=txt)
                 print (txt)               
                             
