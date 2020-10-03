@@ -52,7 +52,12 @@ static PyObject *keys_PyTypeObject_ternaryfunc(keys_object *self, PyObject *args
         return NULL;
     }
 
-    self->handler();
+    switch (self->type)
+    {
+        case ORDINARY_CHARACTER_N:    
+            self->handler("", "", "");
+        break;
+    }
     
     return PyUnicode_FromString(phrase);    
 }

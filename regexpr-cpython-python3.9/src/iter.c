@@ -303,6 +303,8 @@ static PyObject* pattern_methods_compile(pattern_object* self, PyObject* args, P
 	        break;
 	        case '$':
 	        break;
+            case '/':
+            break;
 	        default:                                
 	            key = PyObject_New(keys_object, &keys);
 	            if (key != NULL)

@@ -46,7 +46,9 @@ def main():
                 # The idea is that call to k() will adjust the phrase as per the whole pattern one sub pattern at a time
                 # k knows about the sub pattern and how to adust the phrase with it                
                 txt = k(pattern=o.expr, phrase=txt)
-                print (txt)               
+                print (txt)
+            else:
+                print ("None")                   
                             
     except (regexpr.error) as e:
         print (e)	 
