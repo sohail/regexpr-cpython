@@ -7,7 +7,7 @@
  * Written by, sohail.github.io
  */
 
-#include "iter.h"
+#include "pattern.h"
 
 PyObject *RegExprCompileFlag;
 PyObject *RegExprFooFlag;

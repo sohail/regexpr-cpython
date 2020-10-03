@@ -10,7 +10,7 @@
 #include <Python.h>
 #include <structmember.h>
 
-#include "iter.h"
+#include "pattern.h"
 
 #define		NEW_LINE	0x0a
 #define		CARRIAGE_RETURN	0x0d
