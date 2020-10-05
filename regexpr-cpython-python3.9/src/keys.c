@@ -55,7 +55,7 @@ static PyObject *keys_PyTypeObject_ternaryfunc(keys_object *self, PyObject *args
     switch (self->type)
     {
         case ORDINARY_CHARACTER_N:    
-            self->handler("", "", "");
+            self->handler(3, "foo", "bar", "baz");
         break;
     }
     

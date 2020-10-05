@@ -26,7 +26,7 @@ typedef struct {
    /*Py_ssize_t*/ size_t index; /* Dict is unorderd, we need an order and we need dict. We'll keep the order by evaluating a key the lower idx means the value should be used earlier than any other value which comes later in terms of idx. Programmers we just push the ugly around */
    const int type; /* Type of the key in number */
    const char *type_str; /* Name of the key */
-   char* (*handler)(char*, const char*, const char*);
+   char* (*handler)(int, ...);
 
 } keys_object;
 

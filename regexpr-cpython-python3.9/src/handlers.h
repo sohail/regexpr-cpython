@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdarg.h>
 
 #ifndef     REGEDIT_HANDLERS_H
 #define	    REGEDIT_HANDLERS_H
@@ -21,6 +22,6 @@
     Because this function and all the other functions which will come before or after this function has to have the same signature list...
     so may be these functions should be made into functions accepting variable number of arguments       
  */
-char* default_handler(char*, const char*, const char*);
+char* default_handler(int, ...);
 
 #endif
