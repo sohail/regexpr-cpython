@@ -55,8 +55,11 @@ static PyObject *keys_PyTypeObject_ternaryfunc(keys_object *self, PyObject *args
     switch (self->type)
     {
         case ORDINARY_CHARACTER_N:    
-            self->handler(3, "foo", "bar", "baz");
+            self->handler(3, phrase, pattern, self->index);
         break;
+        case SLASH_CHARACTER_N:
+            self->handler(0);
+        break;        
     }
     
     return PyUnicode_FromString(phrase);    

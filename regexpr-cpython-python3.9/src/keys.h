@@ -11,9 +11,11 @@
 
 /* Will go in keys_object::type. The numeric equivalent of what ever is in keys_object::type_str */
 #define 	ORDINARY_CHARACTER_N	1
+#define  SLASH_CHARACTER_N 2
 
 /* Will go/(be copied) in keys_object::type_str and its numeric equivalent is in keys_object::type */
 #define		ORDINARY_CHARACTER	"ordinary_character"
+#define     SLASH_CHARACTER   "slash_character"
 
 PyDoc_STRVAR(keys_doc, "keys\n");
 

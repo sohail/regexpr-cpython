@@ -304,6 +304,42 @@ static PyObject* pattern_methods_compile(pattern_object* self, PyObject* args, P
 	        case '$':
 	        break;
             case '/':
+                key = PyObject_New(keys_object, &keys);
+	            if (key != NULL)
+                { 
+                    key->handler = slash_handler;                                  
+	                len = strlen(SLASH_CHARACTER);
+	                /* size_t */
+	                //*(int *)(&key->index) = i;
+	                key->index = i;
+	                *(int *)(&key->type) = SLASH_CHARACTER_N;
+	                key->type_str = malloc(len + 1);
+	                if (key->type_str != NULL)
+                    {
+                        strcpy((char *)key->type_str, SLASH_CHARACTER);
+		                *((char *)key->type_str + len) = '\0';
+		                //value = PyString_FromStringAndSize(expr + i, 1);
+                        value = PyUnicode_FromStringAndSize(expr + i, 1);
+                        //value = PyUnicode_New(1, expr + i);
+
+		                if (value != NULL)
+                        {                               
+                            Py_XINCREF(key);
+		                    Py_XINCREF(value);
+
+		                    if (PyDict_SetItem(dict, (PyObject *)key, value) < 0)
+                            {                                
+		                        Py_XDECREF(key);
+		                        Py_XDECREF(value);
+		                        PyErr_Clear();
+                            }   	
+                    	}
+                    }
+                }                    
+                else
+                {
+	                 PyErr_Clear();     
+                }
             break;
 	        default:                                
 	            key = PyObject_New(keys_object, &keys);
