@@ -58,7 +58,7 @@ static PyObject *keys_PyTypeObject_ternaryfunc(keys_object *self, PyObject *args
             self->handler(3, phrase, pattern, self->index);
         break;
         case SLASH_CHARACTER_N:
-            self->handler(0);
+            self->handler(3, phrase, pattern, self->index);
         break;        
     }
     

@@ -32,11 +32,11 @@ def main():
 
             The regexpr.REGEXPR_FOO_FLAG is dummy, does nothing flag; implemented just for study purposes
         """
-        o = regexpr.expr("/zoo/bar/r", regexpr.REGEXPR_COMPILE_FLAG | regexpr.REGEXPR_FOO_FLAG)
+        o = regexpr.expr("/zoo//d", regexpr.REGEXPR_COMPILE_FLAG | regexpr.REGEXPR_FOO_FLAG)
         txt = "zoo went to bar for some baz"        
         # Go through the compiled regular expression, one dictionary item at a time
         # I'm using word compiled here because I've no idea what else to call this process of parsing and making a dictionary out of pattern(or regular expression)
-        for i in range(len(o)):
+        for i in range(len(o) + 1):
             # l is for list and it can be None as well
             l = o[i]
             if (l != None):
