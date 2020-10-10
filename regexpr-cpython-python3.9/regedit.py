@@ -37,16 +37,21 @@ def main():
         # Go through the compiled regular expression, one dictionary item at a time
         # I'm using word compiled here because I've no idea what else to call this process of parsing and making a dictionary out of pattern(or regular expression)
         for i in range(len(o) + 1):
-            # l is for list and it can be None as well
+            # l is for list and it can be None as well            
             l = o[i]
             if (l != None):
-                print ("Type = " + str(l[0]) + ", Type String = " + l[1] + ", Sub Pattern = " + l[2])
+                #print ("Type = " + str(l[0]) + ", Type String = " + l[1] + ", Sub Pattern = " + l[2])
                 # k is for instance of regexpr.keys
                 k = l[3]
                 # The idea is that call to k() will adjust the phrase as per the whole pattern one sub pattern at a time
                 # k knows about the sub pattern and how to adust the phrase with it                
                 txt = k(pattern=o.expr, phrase=txt)
-                print (txt)
+                #print (txt)
+                """
+                    What we'll do here...
+                    Create an instance of sub_pattern class. sub_pattern class will provide methods to organize the whole of the regular expression
+                    How?                     
+                """
             else:
                 print ("None")                   
                             
