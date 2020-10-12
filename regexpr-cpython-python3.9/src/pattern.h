@@ -11,6 +11,7 @@
 #include <structmember.h>
 
 #include "keys.h"
+//#include "sub_pattern.h"
 
 #ifndef		REGEDIT_ITER_H
 #define		REGEDIT_ITER_H
@@ -23,8 +24,6 @@
 
 /* Forward declarations */
 PyTypeObject pattern;
-static PyTypeObject sub_pattern;
-static PySequenceMethods sub_pattern_as_sequence;
 
 PyDoc_STRVAR(pattern_doc, "pattern\n");
 	

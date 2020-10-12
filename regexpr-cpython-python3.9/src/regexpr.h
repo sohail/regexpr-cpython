@@ -12,6 +12,14 @@
 
 #include "pattern.h"
 
+/*
+#include "sub_pattern.h"
+ */
+
+/*
+#include "keys.h"
+ */
+
 #define		NEW_LINE	0x0a
 #define		CARRIAGE_RETURN	0x0d
 #define		SPACE_BAR	0x20

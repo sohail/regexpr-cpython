@@ -198,6 +198,15 @@ PyMODINIT_FUNC PyInit_regexpr(void)
         return NULL;
     }
 
+/*       
+    if (PyType_Ready(&sub_pattern) < 0)
+    {        
+        Py_XDECREF(RegExprCompileFlag);
+        Py_XDECREF(RegExprFooFlag);
+        return NULL;
+    }
+ */    
+  
     /*
      * The name of the module, the module methods and any document string 
      * There is a one to one corresspondence between the name of the module,
@@ -231,6 +240,9 @@ PyMODINIT_FUNC PyInit_regexpr(void)
     /* Add the instance of TypeObject to the module dict */
     PyModule_AddObject(module_re, "re", (PyObject *)&re);
     PyModule_AddObject(module_re, "expr", (PyObject *)&pattern);
+/*    
+    PyModule_AddObject(module_re, "sub_pattern", (PyObject *)&sub_pattern);
+ */    
     PyModule_AddObject(module_re, "error", Err_Regexpr);
 
     /* Add the instance of TypeObject to the module dict */

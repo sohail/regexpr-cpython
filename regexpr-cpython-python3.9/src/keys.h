@@ -4,6 +4,7 @@
 #include <Python.h>
 #include <structmember.h>
 
+#include "sub_pattern.h"
 #include "handlers.h"
 
 #ifndef 	REGEDIT_KEYS_H
@@ -16,6 +17,8 @@
 /* Will go/(be copied) in keys_object::type_str and its numeric equivalent is in keys_object::type */
 #define		ORDINARY_CHARACTER	"ordinary_character"
 #define     SLASH_CHARACTER   "slash_character"
+
+PyTypeObject keys;
 
 PyDoc_STRVAR(keys_doc, "keys\n");
 

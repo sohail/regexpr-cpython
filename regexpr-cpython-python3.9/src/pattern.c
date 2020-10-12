@@ -310,7 +310,7 @@ static PyObject* pattern_methods_compile(pattern_object* self, PyObject* args, P
                     key->handler = slash_handler;                                  
 	                len = strlen(SLASH_CHARACTER);
 	                /* size_t */
-	                //*(int *)(&key->index) = i;
+	                //*(int *)(&key->index) = i;                    
 	                key->index = i;
 	                *(int *)(&key->type) = SLASH_CHARACTER_N;
 	                key->type_str = malloc(len + 1);
@@ -495,7 +495,7 @@ PyTypeObject pattern = {
    /*PyObject_HEAD_INIT(NULL)*/
    PyVarObject_HEAD_INIT(NULL, 0)
    /*0,*/						/* ob_size */
-   "iter.pattern",              /* tp_name, module.typename */ 
+   "regexpr.pattern",              /* tp_name, module.typename */ 
    sizeof(pattern_object),			/* sizeof(*self) */
    0,	  					/* tp_itemsize */
    /* Methods to implement standard operations(Include/object.h) */

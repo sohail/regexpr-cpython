@@ -4,6 +4,9 @@
 #ifndef		REGEDIT_SUB_PATTERN_H
 #define		REGEDIT_SUB_PATTERN_H
 
+/* Forward declaration */
+PyTypeObject sub_pattern;
+
 PyDoc_STRVAR(sub_pattern_doc, "sub_pattern\n");
 
 typedef struct {
