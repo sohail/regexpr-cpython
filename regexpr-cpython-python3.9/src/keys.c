@@ -9,6 +9,8 @@
 
 #include "keys.h"
 
+extern PyObject *Err_Regexpr;
+
 static void keys_PyTypeObject_destructor(keys_object *self) {
 
    if (self->type_str != NULL)
@@ -55,10 +57,18 @@ static PyObject *keys_PyTypeObject_ternaryfunc(keys_object *self, PyObject *args
     switch (self->type)
     {
         case ORDINARY_CHARACTER_N:    
-            self->handler(3, phrase, pattern, self->index);
+            if (self->handler(3, phrase, pattern, self->index, self) == NULL)
+            {
+                PyErr_SetString(Err_Regexpr, "keys.c, in keys_PyTypeObject_ternaryfunc(): call to default_handler() failed");
+                return NULL;
+            }
         break;
         case SLASH_CHARACTER_N:            
-            self->handler(3, phrase, pattern, self->index);
+            if (self->handler(3, phrase, pattern, self->index, self) == NULL)
+            {
+                PyErr_SetString(Err_Regexpr, "keys.c, in keys_PyTypeObject_ternaryfunc(): call to slash_handler() failed");
+                return NULL;
+            }
         break;        
     }
     

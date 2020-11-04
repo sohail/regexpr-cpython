@@ -307,6 +307,7 @@ static PyObject* pattern_methods_compile(pattern_object* self, PyObject* args, P
                 key = PyObject_New(keys_object, &keys);
 	            if (key != NULL)
                 { 
+                    key->sub_pattern_object_ptr = NULL;
                     key->handler = slash_handler;                                  
 	                len = strlen(SLASH_CHARACTER);
 	                /* size_t */
@@ -344,7 +345,8 @@ static PyObject* pattern_methods_compile(pattern_object* self, PyObject* args, P
 	        default:                                
 	            key = PyObject_New(keys_object, &keys);
 	            if (key != NULL)
-                {   
+                { 
+                    key->sub_pattern_object_ptr = NULL;  
                     key->handler = default_handler;                 
 	                len = strlen(ORDINARY_CHARACTER);
 	                /* size_t */

@@ -47,6 +47,7 @@ def main():
                 # k knows about the sub pattern and how to adust the phrase with it                
                 txt = k(pattern=o.expr, phrase=txt)
                 #print (txt)
+                
                 """
                     What we'll do here...
                     Create an instance of sub_pattern class. sub_pattern class will provide methods to organize the whole of the regular expression

@@ -1,9 +1,18 @@
+/* 
+    After thought lead me to a recursive include, kets.h includes handlers.h. The reason why keys.h is here and not in henalers.h   
+ */
+#include "keys.h"
 #include "handlers.h"
+
+//extern PyObject *Err_Regexpr;
+
+static sub_pattern_object* sub_pattern_object_ptr;
 
 char* default_handler(int n, ...)
 {  
     char *phrase, *pattern; 
     size_t index;
+    keys_object* self;
     va_list valist;
 
     /* initialize valist for num number of arguments */
@@ -12,6 +21,7 @@ char* default_handler(int n, ...)
     phrase = va_arg(valist, char*);
     pattern = va_arg(valist, char*);
     index = va_arg(valist, size_t);
+    self = va_arg(valist, keys_object*);
 
     /* clean memory reserved for valist */
     va_end(valist);
@@ -56,7 +66,8 @@ char* default_handler(int n, ...)
 char* slash_handler(int n, ...)
 {   
     char *phrase, *pattern; 
-    size_t index;       
+    size_t index;
+    keys_object* self;       
     va_list valist;
 
     /* initialize valist for num number of arguments */
@@ -65,6 +76,7 @@ char* slash_handler(int n, ...)
     phrase = va_arg(valist, char*);
     pattern = va_arg(valist, char*);
     index = va_arg(valist, size_t);
+    self = va_arg(valist, keys_object*);
 
     /* clean memory reserved for valist */
     va_end(valist);
@@ -105,6 +117,22 @@ char* slash_handler(int n, ...)
         /*
             Do nothing
          */
+        if (self->sub_pattern_object_ptr == NULL)
+        {
+            self->sub_pattern_object_ptr = PyObject_New(sub_pattern_object, &sub_pattern);
+
+            if (self->sub_pattern_object_ptr != NULL)
+            {
+                sub_pattern_object_ptr = self->sub_pattern_object_ptr;
+                
+                //printf("The very first slash...\n");
+            }
+            else
+            {                
+                return NULL; 
+            }
+            
+        }
     }
                 
     return (char*)0;

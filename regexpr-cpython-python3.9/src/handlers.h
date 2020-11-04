@@ -2,6 +2,7 @@
 #include <stdarg.h>
 #include <string.h>
 
+//#include "keys.h"
 #include "sub_pattern.h"
 
 #ifndef     REGEDIT_HANDLERS_H

@@ -33,6 +33,8 @@ typedef struct {
    const char *type_str; /* Name of the key */
    char* (*handler)(int, ...);
 
+   sub_pattern_object* sub_pattern_object_ptr;
+
 } keys_object;
 
 #endif
